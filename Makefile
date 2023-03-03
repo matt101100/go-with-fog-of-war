@@ -20,5 +20,8 @@ $(TARGET):$(OBJ)
 run:
 	./$(TARGET)
 
+test:
+	echo what are we testing?!
+
 clean:
 	rm -f *.o *.obj $(TARGET)
