@@ -354,11 +354,7 @@ int main(int argc, char *argv[]) {
                 printf("Occupied coordinate\n");
 
             } else if (successful_place == -1) {
-                if (chars_read > MAX_PLACE_CMD_LEN) {
-                    printf("Invalid!\n");
-                } else {
-                    printf("Invalid coordinate\n");
-                }
+                printf("Invalid coordinate\n");
 
             }
         } else {
