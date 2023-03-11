@@ -363,6 +363,8 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    //test
+
     end_game(turn_flag, history);
     return 0;
 }
