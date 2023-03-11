@@ -60,6 +60,9 @@ int get_line(char *buffer, size_t buffer_len) {
  * returns 1 if string is valid, 0 otherwise
 */ 
 int is_place_command(char input[]) {
+    if (strlen(input) < MIN_PLACE_CMD_LEN) {
+        return 0;
+    }
 
     // clone the input buffer the input line is not modified
     char input_copy[MAX_LINE_LEN];
@@ -81,8 +84,6 @@ int is_place_command(char input[]) {
     char *input_ptr = strtok(input_copy, " ");
     if (strcmp(input_ptr, "place") != 0) {
         return 0;
-    } else if (strlen(input) < MIN_PLACE_CMD_LEN) {
-        return 1;
     }
 
     return 1;
