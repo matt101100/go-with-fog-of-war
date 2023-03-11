@@ -32,12 +32,19 @@ int get_line(char *buffer, size_t buffer_len) {
 
     int c;
     int bytes_read = 0;
+    int whitespaces = 0;
     // read one char at a time until '\n' is read
     while ((c = fgetc(stdin)) != '\n') {
         if (bytes_read < buffer_len - 1) {
             buffer[bytes_read] = (char) c;
         }
+        if ((char) c == ' ') {
+            whitespaces++;
+        }
         bytes_read++;
+    }
+    if (whitespaces > 1) {
+        return 0;
     }
     return bytes_read;
 }
