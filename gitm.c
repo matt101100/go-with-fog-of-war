@@ -60,11 +60,8 @@ int get_line(char *buffer, size_t buffer_len) {
  * returns 1 if string is valid, 0 otherwise
 */ 
 int is_place_command(char input[]) {
-    if (strlen(input) < MIN_PLACE_CMD_LEN) {
-        return 0;
-    }
 
-    // // clone the input buffer the input line is not modified
+    // clone the input buffer the input line is not modified
     char input_copy[MAX_LINE_LEN];
     strncpy(input_copy, input, MAX_LINE_LEN);
 
@@ -82,8 +79,10 @@ int is_place_command(char input[]) {
 
     // check if the command lable is 'place'
     char *input_ptr = strtok(input_copy, " ");
-    if (strcasecmp(input_ptr, "place") != 0) {
+    if (strcmp(input_ptr, "place") != 0) {
         return 0;
+    } else if (strlen(input) < MIN_PLACE_CMD_LEN) {
+        return 1;
     }
 
     return 1;
@@ -324,24 +323,24 @@ int main(int argc, char *argv[]) {
         if (chars_read <= 1) {
             printf("Invalid!\n");
 
-        } else if (strcasecmp(input, "who") == 0) {
+        } else if (strcmp(input, "who") == 0) {
             if (turn_flag) {
                 printf("W\n");
             } else {
                 printf("B\n");
             }
 
-        } else if (strcasecmp(input, "term") == 0) {
+        } else if (strcmp(input, "term") == 0) {
             return 1;
 
-        } else if (strcasecmp(input, "resign") == 0) {
+        } else if (strcmp(input, "resign") == 0) {
             end_game(turn_flag, history);
             return 1;
 
-        } else if (strcasecmp(input, "history") == 0) {
+        } else if (strcmp(input, "history") == 0) {
             printf("%s\n", history);
 
-        } else if (strcasecmp(input, "view") == 0) {
+        } else if (strcmp(input, "view") == 0) {
             view_hole(board, mist_center_row, mist_center_col);
 
         } else if (is_place_command(input)) {
