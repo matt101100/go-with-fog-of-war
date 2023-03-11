@@ -35,6 +35,9 @@ int get_line(char *buffer, size_t buffer_len) {
     int whitespaces = 0;
     // read one char at a time until '\n' is read
     while ((c = fgetc(stdin)) != '\n') {
+        if (c == EOF) {
+            return -1;
+        }
         if (bytes_read < buffer_len - 1) {
             buffer[bytes_read] = (char) c;
         }
@@ -262,13 +265,6 @@ void display_board(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int 
     for (int i = 0; i < BOARD_SIZE; i++) {
         printf("row: %d ", 19 - i);
         for (int j = 0; j < BOARD_SIZE; j++) {
-            // if (i == mist_center_row && j == mist_center_col) {
-            //     printf("A");
-            // } else if (((i > (mist_center_row - 4) && i < (mist_center_row + 4)) && (j > (mist_center_col - 4) && j < (mist_center_col + 4)))) {
-            //     printf("%c", board[i][j]);
-            // } else {
-            //     printf("@");
-            // }
             printf("%c", board[i][j]);
         }
         printf("\n");
@@ -321,6 +317,10 @@ int main(int argc, char *argv[]) {
         }
 
         int chars_read = get_line(input, MAX_LINE_LEN);
+        if (chars_read == -1) {
+            // terminate once reaching EOF MAINLY FOR TESTING
+            return 0;
+        }
         if (chars_read <= 1) {
             printf("Invalid!\n");
 
@@ -343,7 +343,6 @@ int main(int argc, char *argv[]) {
 
         } else if (strcasecmp(input, "view") == 0) {
             view_hole(board, mist_center_row, mist_center_col);
-            // display_board(board, mist_center_row, mist_center_col);
 
         } else if (is_place_command(input)) {
             // handle placing the stone, or rejecting if invalid coordinates are given / line is too long
@@ -354,8 +353,6 @@ int main(int argc, char *argv[]) {
                 game_state = check_game_state(board, turn_flag);
                 update_turn_flag(&turn_flag);
                 turn_count++;
-                // display_board(board, mist_center_row, mist_center_col);
-                // printf("\n");
 
             } else if (successful_place == 0) {
                 printf("Occupied coordinate\n");
