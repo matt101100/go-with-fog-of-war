@@ -62,6 +62,8 @@ int get_line(char *buffer, size_t buffer_len) {
 int is_place_command(char input[]) {
     if (strlen(input) < MIN_PLACE_CMD_LEN - 1) {
         return 0;
+    } else if (strlen(input) < MIN_PLACE_CMD_LEN) {
+        return 1;
     }
 
     // clone the input buffer the input line is not modified
@@ -103,7 +105,7 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
     */
 
    // check that the coordinate is not too long
-   if (chars_read > MAX_PLACE_CMD_LEN) {
+   if (chars_read > MAX_PLACE_CMD_LEN || chars_read < MIN_PLACE_CMD_LEN) {
     return -1;
    }
 
