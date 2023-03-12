@@ -255,21 +255,12 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     return 0;
 }
 
-// prints board, for testing only
-void display_board(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
-    for (int i = 0; i < BOARD_SIZE; i++) {
-        printf("row: %d ", 19 - i);
-        for (int j = 0; j < BOARD_SIZE; j++) {
-            printf("%c", board[i][j]);
-        }
-        printf("\n");
-    }
-}
-
 /*
  * prints the view string in the specified format
  */
 void view_hole(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
+    // +65 to convert index to corresponding capital letter
+    // 19 - since rows on board matrix are top-to-bottom
     printf("%c%d,", mist_center_col + 65, 19 - mist_center_row);
     for (int i = mist_center_row - 3; i < mist_center_row + 4; i++) {
         for (int j = mist_center_col - 3; j < mist_center_col + 4; j++) {
@@ -282,6 +273,36 @@ void view_hole(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist
     }
     printf("\n");
 }
+
+// !! Functions here are for testing !!
+// prints board
+// void display_board(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
+//     for (int i = 0; i < BOARD_SIZE; i++) {
+//         printf("row: %d ", 19 - i);
+//         for (int j = 0; j < BOARD_SIZE; j++) {
+//             printf("%c", board[i][j]);
+//         }
+//         printf("\n");
+//     }
+// }
+
+// displays board covered in mist
+// void display_board_mist(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
+//     for (int i = 0; i < BOARD_SIZE; i++) {
+//         printf("row: %d ", 19 - i);
+//         for (int j = 0; j < BOARD_SIZE; j++) {
+//             if (i == mist_center_row && j == mist_center_col) {
+//                 printf("A");
+//             } else if (((i > (mist_center_row - 4) && i < (mist_center_row + 4)) && (j > (mist_center_col - 4) && j < (mist_center_col + 4)))) {
+//                 printf("%c", board[i][j]);
+//             } else {
+//                 printf("@");
+//             }
+//         }
+//         printf("\n");
+//     }
+// }
+// !! Functions here are for testing !!
 
 int main(int argc, char *argv[]) {
 
@@ -304,6 +325,7 @@ int main(int argc, char *argv[]) {
     // accept input as long as no winning state has been reached
     while (!game_state) {
         if (turn_count > (19 * 19)) {
+            // tie occurs after all spaces on the board are occupied and a win has not been reached
             printf("Wow, a tie!\n");
             printf("%s\n", history);
             printf("Thank you for playing!\n");

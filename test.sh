@@ -12,7 +12,7 @@ for TEST in $(find tests -iregex '.*\.in' | xargs basename -s .in); do
     echo ""
     IN=tests/$TEST.in
     OUT=tests/$TEST.out
-    ./gitm < $IN | diff -su - $OUT && echo -e "testing $TEST: ${GREEN}SUCCESS!${NC}" || echo -e "testing $TEST: ${RED}FAILURE.${NC}"
+    ./gitm < $IN | diff -su - $OUT && echo -e "testing $TEST: ${GREEN}SUCCESS!${NC}" || echo -e "testing $TEST: ${RED}FAIL.${NC}"
 done
 gcov gitm.c
 echo
