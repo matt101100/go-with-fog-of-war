@@ -47,6 +47,7 @@ int get_line(char *buffer, size_t buffer_len) {
         bytes_read++;
     }
     if (whitespaces > 1) {
+        // no valid input has more than 1 whitespace, treat these as invalid
         return 0;
     }
     return bytes_read;
@@ -60,7 +61,8 @@ int get_line(char *buffer, size_t buffer_len) {
  * returns 1 if string is valid, 0 otherwise
 */ 
 int is_place_command(char input[]) {
-    if (strlen(input) <= 6) {
+    // handles short place commands
+    if (strlen(input) <= MIN_PLACE_CMD_LEN - 2) {
         return 0;
     }
 
