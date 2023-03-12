@@ -24,4 +24,4 @@ test:
 	bash test.sh
 
 clean:
-	rm -f *.o *.obj $(TARGET)
+	rm -f *.o *.obj *.c.gcov *.gcda *.gcno $(TARGET)

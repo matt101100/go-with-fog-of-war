@@ -1,3 +1,6 @@
 a.out
 gitm
 *.o
+gitm.c.gcov
+gitm.gcda
+gitm.gcno
