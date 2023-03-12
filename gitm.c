@@ -60,7 +60,7 @@ int get_line(char *buffer, size_t buffer_len) {
  * returns 1 if string is valid, 0 otherwise
 */ 
 int is_place_command(char input[]) {
-    if (strlen(input) == 5) {
+    if (strlen(input) <= 6) {
         return 0;
     }
 
