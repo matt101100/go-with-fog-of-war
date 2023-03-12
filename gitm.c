@@ -61,7 +61,9 @@ int get_line(char *buffer, size_t buffer_len) {
  * returns 1 if string is valid, 0 otherwise
 */ 
 int is_place_command(char input[]) {
-    // handles short place commands
+    // handles short place commands 
+    // -2 since place commands of length 6 or less are missing
+    // proper formatting or coordinates
     if (strlen(input) <= MIN_PLACE_CMD_LEN - 2) {
         return 0;
     }
@@ -97,6 +99,7 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
     return -1;
    }
 
+    // extract col and row values
     char column = valid_place_cmd[6]; // col cordinate will always be at this index
     int row;
     int column_index = column - 64; // - 64 to convert the letter to its corresponding index in the alphabet
@@ -166,6 +169,7 @@ void update_history(char *history, char *place_cmd) {
     }
 }
 
+// flips the turn flag
 void update_turn_flag(int *turn_flag) {
     if (*turn_flag) {
         *turn_flag = 0;
@@ -200,8 +204,8 @@ void initialize_board(char board[BOARD_SIZE][BOARD_SIZE]) {
  * checks if a winning position has been reached by searching for all possible 
  * locations a 5-in-a-row has been make, for each type of win
  * (horizontal, vertical, positive diagonal, negative diagonal)
- * Note: -4 from a loop upper bound means that no connect 5 is possible in the outer 4 rows / cols
- * Similarly, starting an index a 4 means that no connect 5 is possible in the initial 4 rows / cols
+ * Note: -4 from a loop upper bound means that no win is possible in the outer 4 rows / cols
+ * Similarly, starting an index a 4 means that no win is possible in the initial 4 rows / cols
  */
 int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // determine the value of piece
@@ -247,10 +251,11 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
             }
         }
     }
+
     return 0;
 }
 
-// !! REMOVE ON FINAL SUBMISSION !!
+// prints board, for testing only
 void display_board(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
     for (int i = 0; i < BOARD_SIZE; i++) {
         printf("row: %d ", 19 - i);
@@ -260,10 +265,9 @@ void display_board(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int 
         printf("\n");
     }
 }
-// !! REMOVE ON FINAL SUBMISSION !!
 
 /*
- * prints the center of the hold and displays the insides of the hole in the specified format
+ * prints the view string in the specified format
  */
 void view_hole(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
     printf("%c%d,", mist_center_col + 65, 19 - mist_center_row);
@@ -299,7 +303,7 @@ int main(int argc, char *argv[]) {
     // main loop for parsing user input
     // accept input as long as no winning state has been reached
     while (!game_state) {
-        if (turn_count == (19 * 19 + 1)) {
+        if (turn_count > (19 * 19)) {
             printf("Wow, a tie!\n");
             printf("%s\n", history);
             printf("Thank you for playing!\n");
@@ -308,7 +312,7 @@ int main(int argc, char *argv[]) {
 
         int chars_read = get_line(input, MAX_LINE_LEN);
         if (chars_read == -1) {
-            // terminate once reaching EOF MAINLY FOR TESTING
+            // terminate once reaching EOF, mainly for testing
             return 0;
         }
         if (chars_read <= 1) {
