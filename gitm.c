@@ -70,18 +70,6 @@ int is_place_command(char input[]) {
     char input_copy[MAX_LINE_LEN];
     strncpy(input_copy, input, MAX_LINE_LEN);
 
-    // first count the number of whitespaces
-    int whitespace_counter = 0;
-    for (int i = 0; i < strlen(input); i++) {
-        if (input[i] == ' ') {
-            whitespace_counter++;
-        }
-        if (whitespace_counter > 1) {
-            // we expect exactly 1 whitespace, so return 0 when we see more than 1
-            return 0;
-        }
-    }
-
     // check if the command lable is 'place'
     char *input_ptr = strtok(input_copy, " ");
     if (strcmp(input_ptr, "place") != 0) {
@@ -104,7 +92,7 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
      * can locate the coordinate string using indexing
     */
 
-   // check that the coordinate is not too long
+   // check that the command is not too long or too short
    if (chars_read > MAX_PLACE_CMD_LEN || chars_read < MIN_PLACE_CMD_LEN) {
     return -1;
    }
