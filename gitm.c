@@ -9,7 +9,7 @@
 
 #define BOARD_SIZE 19
 #define LONGEST_POSSIBLE_GAME_LEN 19 * 19 * 3 // one turn for each slot on board, x3 accounts for long coordinates
-#define MAX_LINE_LEN 16 // length of the longest possible valid place command + 1 for the '\0' byte
+#define MAX_LINE_LEN 16 // length of the longest possible valid command + 1 for the '\0' byte
 #define MAX_PLACE_CMD_LEN 9
 #define MIN_PLACE_CMD_LEN 8
 
@@ -25,7 +25,8 @@
 */
 
 /*
- * places at most buffer_len chars into buffer and returns the number of bytes read from the buffer
+ * places at most buffer_len chars into buffer 
+ * returns the number of bytes read from the buffer
  */
 int get_line(char *buffer, size_t buffer_len) {
     memset(buffer, 0, buffer_len); // clears buffer so string is null-terminated
@@ -82,16 +83,18 @@ int is_place_command(char input[]) {
 }
 
 /* 
- * takes in a place str containing the desired coordinates and validates those coordinates
- * then marks those coordinates as occupied by the  player that called the command
+ * takes in place str containing the coordinates and validates coordinates
+ * then marks those coords as occupied by the  player that called the command
  * returns 1 if the place was successful, 0 if the coordinates were occupied
  * and -1 if the coordinates were out of the board range
  */
-int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BOARD_SIZE], int chars_read, int *mist_center_row, int *mist_center_col) {
+int place_stone(char valid_place_cmd[], int turn_flag,
+                char board[BOARD_SIZE][BOARD_SIZE], int chars_read, 
+                int *mist_center_row, int *mist_center_col) {
     /*
-     * we expect only two valid string lengths: 9 or 10 (note this includes the '\n').
-     * hence, first check which case the given string falls under and knowing this, we 
-     * can locate the coordinate string using indexing
+     * we expect only two valid string lengths: 9 or 10
+     * hence, first check which case the given string falls under 
+     * then we can locate the coordinate string using indexing
     */
 
    // check that the command is not too long or too short
@@ -100,9 +103,10 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
    }
 
     // extract col and row values
-    char column = valid_place_cmd[6]; // col cordinate will always be at this index
+    char column = valid_place_cmd[6]; // col val will always be at this index
     int row;
-    int column_index = column - 64; // - 64 to convert the letter to its corresponding index in the alphabet
+    // - 64 to convert the letter to its corresponding index in the alphabet
+    int column_index = column - 64;
     if (column < 'A' || column > 'S') {
         // column out of bounds
         return -1;
@@ -129,12 +133,14 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
     }
 
         // check that the requested spot is empty
-    if (board[19 - row][column_index - 1] == 'o' || board[19 - row][column_index - 1] == '#') {
+    if (board[19 - row][column_index - 1] == 'o' || 
+        board[19 - row][column_index - 1] == '#') {
         return 0;
     }
 
     // updating board
-    // note: the row coordinate is 19 - row since the matrix represents the rows as upside down
+    // note: the row coordinate is 19 - row since the matrix 
+    // represents the rows as upside down
     if (turn_flag) {
         board[19 - row][column_index - 1] = 'o';
     } else {
@@ -142,14 +148,17 @@ int place_stone(char valid_place_cmd[], int turn_flag, char board[BOARD_SIZE][BO
     }
 
     // update the mist center coords
-    *mist_center_col = (1 + (5 * (column_index * column_index) + 3 * column_index + 4) % 19) - 1; // x coordinate
-    *mist_center_row = 19 - (1 + (4 * (row * row) + 2 * row - 4) % 19); // y coordinate
+    // x coordinate
+    *mist_center_col = (1 + (5 * (column_index * column_index) + 
+                        3 * column_index + 4) % 19) - 1;
+    // y coordinate
+    *mist_center_row = 19 - (1 + (4 * (row * row) + 2 * row - 4) % 19);
 
     return 1;
 }
 
 /*
- * creates a temp string that is filled with the chars that make up the last move made
+ * creates temp string that is filled with the chars that make up the last move
  * then concatenates this string to the history string
  */
 void update_history(char *history, char *place_cmd) {
@@ -204,8 +213,10 @@ void initialize_board(char board[BOARD_SIZE][BOARD_SIZE]) {
  * checks if a winning position has been reached by searching for all possible 
  * locations a 5-in-a-row has been make, for each type of win
  * (horizontal, vertical, positive diagonal, negative diagonal)
- * Note: -4 from a loop upper bound means that no win is possible in the outer 4 rows / cols
- * Similarly, starting an index a 4 means that no win is possible in the initial 4 rows / cols
+ * Note: -4 from a loop upper bound means that no win 
+ * is possible in the outer 4 rows / cols
+ * Similarly, starting an index a 4 means that no win 
+ * is possible in the initial 4 rows / cols
  */
 int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // determine the value of piece
@@ -219,7 +230,9 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // check for vertical 5-in-a-row
     for (int i = 0; i < BOARD_SIZE - 4; i++) {
         for (int j = 0; j < BOARD_SIZE; j++) {
-            if (board[i][j] == piece && board[i + 1][j] == piece && board[i + 2][j] == piece && board[i + 3][j] == piece && board[i + 4][j] == piece) {
+            if (board[i][j] == piece && board[i + 1][j] == piece &&
+                board[i + 2][j] == piece && board[i + 3][j] == piece &&
+                board[i + 4][j] == piece) {
                 return 1;
             }
         }
@@ -228,7 +241,9 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // check for horizontal 5-in-a-row
     for (int i = 0; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE - 4; j++) {
-            if (board[i][j] == piece && board[i][j + 1] == piece && board[i][j + 2] == piece  && board[i][j + 3] == piece && board[i][j + 4] == piece) {
+            if (board[i][j] == piece && board[i][j + 1] == piece &&
+                board[i][j + 2] == piece  && 
+                board[i][j + 3] == piece && board[i][j + 4] == piece) {
                 return 1;
             }
         }
@@ -237,7 +252,9 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // check for positive diagonal 5-in-a-row
     for (int i = 4; i < BOARD_SIZE; i++) {
         for (int j = 0; j < BOARD_SIZE - 4; j++) {
-            if (board[i][j] == piece && board[i - 1][j + 1] == piece && board[i - 2][j + 2] == piece && board[i - 3][j + 3] == piece && board[i - 4][j + 4] == piece) {
+            if (board[i][j] == piece && board[i - 1][j + 1] == piece && 
+                board[i - 2][j + 2] == piece && board[i - 3][j + 3] == piece && 
+                board[i - 4][j + 4] == piece) {
                 return 1;
             }
         }
@@ -246,7 +263,9 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
     // check for negative diagonal 5-in-a-row
     for (int i = 4; i < BOARD_SIZE; i++) {
         for (int j = 4; j < BOARD_SIZE - 4; j++) {
-            if (board[i][j] == piece && board[i - 1][j - 1] == piece && board[i - 2][j - 2] == piece && board[i - 3][j - 3] == piece && board[i - 4][j - 4] == piece) {
+            if (board[i][j] == piece && board[i - 1][j - 1] == piece && 
+                board[i - 2][j - 2] == piece && board[i - 3][j - 3] == piece && 
+                board[i - 4][j - 4] == piece) {
                 return 1;
             }
         }
@@ -258,7 +277,8 @@ int check_game_state(char board[BOARD_SIZE][BOARD_SIZE], int turn_flag) {
 /*
  * prints the view string in the specified format
  */
-void view_hole(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, int mist_center_col) {
+void view_hole(char board[BOARD_SIZE][BOARD_SIZE], int mist_center_row, 
+               int mist_center_col) {
     // +65 to convert index to corresponding capital letter
     // 19 - since rows on board matrix are top-to-bottom
     printf("%c%d,", mist_center_col + 65, 19 - mist_center_row);
@@ -325,7 +345,8 @@ int main(int argc, char *argv[]) {
     // accept input as long as no winning state has been reached
     while (!game_state) {
         if (turn_count > (19 * 19)) {
-            // tie occurs after all spaces on the board are occupied and a win has not been reached
+            // tie occurs after all spaces on board are occupied 
+            // and a win has not been reached
             printf("Wow, a tie!\n");
             printf("%s\n", history);
             printf("Thank you for playing!\n");
@@ -361,10 +382,14 @@ int main(int argc, char *argv[]) {
             view_hole(board, mist_center_row, mist_center_col);
 
         } else if (is_place_command(input)) {
-            // handle placing the stone, or rejecting if invalid coordinates are given / line is too long
-            int successful_place = place_stone(input, turn_flag, board, chars_read, &mist_center_row, &mist_center_col);
+            // handle placing the stone, or rejecting if invalid coordinates are
+            // given / line is too long
+            int successful_place = place_stone(input, turn_flag, board, 
+                                               chars_read, &mist_center_row, 
+                                               &mist_center_col);
             if (successful_place == 1) {
-                // add successfully placed stone to history, then check for a winning position
+                // add successfully placed stone to history, 
+                // then check for a winning position
                 update_history(history, input);
                 game_state = check_game_state(board, turn_flag);
                 update_turn_flag(&turn_flag);
