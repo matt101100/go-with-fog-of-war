@@ -373,7 +373,7 @@ int main(int argc, char *argv[]) {
 
         } else if (strcmp(input, "resign") == 0) {
             end_game(turn_flag, history);
-            return 1;
+            return 0;
 
         } else if (strcmp(input, "history") == 0) {
             printf("%s\n", history);
